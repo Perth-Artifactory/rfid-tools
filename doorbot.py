@@ -13,6 +13,28 @@ cardfile = '/home/pi/known_cards.csv'
 
 # merged in irker client to notify the IRC channel when door opened
 irker_server = ("core", 6659)
+target = "ircs://chat.freenode.net/artifactory"
+subsystem = 'Doorbot: '
+
+def connect():
+    return socket.create_connection(irker_server)
+
+def send(s, target, message):
+    data = {"to": target, "privmsg" : message}
+    dump = json.dumps(data)
+    if not isinstance(dump, bytes):
+        dump = dump.encode('ascii')
+    s.sendall(dump)
+
+def irk(message):
+    try:
+        s = connect()
+        send(s, target, subsystem + message)
+        s.close()
+    except socket.error as e:
+        sys.stderr.write("irk: write to server failed: %r\n" % e)
+
+##########
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(13, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -31,9 +53,6 @@ with open(cardfile) as csvfile:
         cardhex, person, disabled = row
         knowncards[cardhex] = [person,bool(disabled)]
 print knowncards
-
-def irk(msg):
-    print msg
 
 code = ''
 
