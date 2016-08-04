@@ -43,7 +43,7 @@ GPIO.setup(21, GPIO.OUT) # Relay 1
 import serial
 serial = serial.Serial("/dev/ttyAMA0", baudrate=9600)
 
-types = {'6F': 'Card','28':'Fob'}
+types = {'6F': 'Card','28':'Fob','1D':'Card', '1C':'Card'}
 knowncards = {}
 
 # list of valid cards
@@ -68,7 +68,11 @@ while True:
 		card = code[-12:-2]
 		prefix = card[0:2]
 		cardno = card[2:10]
-		cardstr = card,types[prefix],int(cardno,16)
+		if prefix in types:
+			tagtype = types[prefix]
+		else:
+			tagtype = 'RFID'
+		cardstr = card,tagtype,int(cardno,16)
 		print cardstr
 		code = ''
 		if knowncards.has_key(card):
