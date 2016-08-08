@@ -38,8 +38,7 @@ def irk(message):
 ##########
 
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP) # WTF is this connected to?
-
+GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP) # Sense for Lasercutter on
 GPIO.setup(23, GPIO.OUT) # Relay 1
 GPIO.output(23, False)
 GPIO.setup(16, GPIO.OUT) # RED LED
