@@ -78,84 +78,84 @@ def flash(colour,count):
 
 
 def unlock_bigred():
-	GPIO.output(23, True)
-	time.sleep(3)
-	GPIO.output(23, False)
+    GPIO.output(23, True)
+    time.sleep(3)
+    GPIO.output(23, False)
 
 
 
 while True:
-	data = serial.read()
-	input_state = GPIO.input(23)
-	if data == '\r':
-		card = code[-12:-2]
-		prefix = card[0:2]
-		cardno = card[2:10]
-		cardstr = card,types[prefix],int(cardno,16)
-		print cardstr
-		code = ''
-		if knowncards.has_key(card):
-			print "KNOWN %s %s presented at laser" % (cardstr[1],cardstr[2])
-			# Has card been disabled?
-			if knowncards[card][1]:
-				print "DISABLED: " + knowncards[card][0]
-				syslog.syslog('DENIED: %s (Card Disabled) %s' % (knowncards[card][0],int(cardno,16)))
-				GPIO.output(16, False) #Red
-				GPIO.output(20, False) #Green
-				#Flash orange to show denied
-				flash('orange',4)
-				GPIO.output(16, True) #Red
+    data = serial.read()
+    input_state = GPIO.input(23)
+    if data == '\r':
+        card = code[-12:-2]
+        prefix = card[0:2]
+        cardno = card[2:10]
+        cardstr = card,types[prefix],int(cardno,16)
+        print cardstr
+        code = ''
+        if knowncards.has_key(card):
+            print "KNOWN %s %s presented at laser" % (cardstr[1],cardstr[2])
+            # Has card been disabled?
+            if knowncards[card][1]:
+                print "DISABLED: " + knowncards[card][0]
+                syslog.syslog('DENIED: %s (Card Disabled) %s' % (knowncards[card][0],int(cardno,16)))
+                GPIO.output(16, False) #Red
+                GPIO.output(20, False) #Green
+                #Flash orange to show denied
+                flash('orange',4)
+                GPIO.output(16, True) #Red
 
-				irk('BigRed: \x1b[31m'+knowncards[card][0] +'\x1b[0m denied access')
-			else:
-				if (knowncards[card][0] == ''):
-					print "DENIED UNMAPPED USER"
-					syslog.syslog('DENIED: UNMAPPED USER %s' % int(cardno,16))
-					irk('BigRed: \x1b[33mUnknown User\x1b[0m DENIED')
-					GPIO.output(16, False) #Red
-					GPIO.output(20, False) #Green
-					#Flash orange to show denied
-					flash('orange',4)
-					GPIO.output(16, True) #Red
+                irk('BigRed: \x1b[31m'+knowncards[card][0] +'\x1b[0m denied access')
+            else:
+                if (knowncards[card][0] == ''):
+                    print "DENIED UNMAPPED USER"
+                    syslog.syslog('DENIED: UNMAPPED USER %s' % int(cardno,16))
+                    irk('BigRed: \x1b[33mUnknown User\x1b[0m DENIED')
+                    GPIO.output(16, False) #Red
+                    GPIO.output(20, False) #Green
+                    #Flash orange to show denied
+                    flash('orange',4)
+                    GPIO.output(16, True) #Red
 
-				else:
-					print "ALLOWED: " + knowncards[card][0]
+                else:
+                    print "ALLOWED: " + knowncards[card][0]
 
 
-				if loggedon == '':
-					syslog.syslog('ALLOWED: %s %s' % (knowncards[card][0],int(cardno,16)))
-					irk('BigRed: \x1b[32m' + knowncards[card][0]+ '\x1b[0m Logged On')
-					loggedon = 1
-					start = time.time()
-					userlogged = '%s'
-					GPIO.output(16, False) #Red
-					GPIO.output(20, True) #Green
-					unlock_bigred()
-					continue
+                if loggedon == '':
+                    syslog.syslog('ALLOWED: %s %s' % (knowncards[card][0],int(cardno,16)))
+                    irk('BigRed: \x1b[32m' + knowncards[card][0]+ '\x1b[0m Logged On')
+                    loggedon = 1
+                    start = time.time()
+                    userlogged = '%s'
+                    GPIO.output(16, False) #Red
+                    GPIO.output(20, True) #Green
+                    unlock_bigred()
+                    continue
 
-				if loggedon:
-					loggedon = ''
-					elapsed = (time.time() - start)
-					irk('BigRed: ' + knowncards[card][0]+ " Logged Off -  %d s elapsed" % elapsed)
-					GPIO.output(16, True) #Red
-					GPIO.output(20, False) #Green
+                if loggedon:
+                    loggedon = ''
+                    elapsed = (time.time() - start)
+                    irk('BigRed: ' + knowncards[card][0]+ " Logged Off -  %d s elapsed" % elapsed)
+                    GPIO.output(16, True) #Red
+                    GPIO.output(20, False) #Green
 
-					start = ''
-					elapsed = ''
-					outstr = ''
+                    start = ''
+                    elapsed = ''
+                    outstr = ''
 
-		else:
-			print "UNKNOWN Card/Fob"
-			syslog.syslog('DENIED ' + str(cardstr))
-			os.system ("mpg123 -q /opt/sounds/denied.mp3 &")
-			irk('BigRed: \x1b[31mUnknown Card\x1b[0m')
-			GPIO.output(16, False) #Red
-			GPIO.output(20, False) #Green
-			#Flash orange to show denied
-			flash('orange',4)
-			GPIO.output(16, True) #Red
+        else:
+            print "UNKNOWN Card/Fob"
+            syslog.syslog('DENIED ' + str(cardstr))
+            os.system ("mpg123 -q /opt/sounds/denied.mp3 &")
+            irk('BigRed: \x1b[31mUnknown Card\x1b[0m')
+            GPIO.output(16, False) #Red
+            GPIO.output(20, False) #Green
+            #Flash orange to show denied
+            flash('orange',4)
+            GPIO.output(16, True) #Red
 
-	else:
-		code = code + data
+    else:
+        code = code + data
 
 # unlikely to get here...
