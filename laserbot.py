@@ -7,7 +7,6 @@ import os
 import syslog
 import json
 import socket
-from datetime import timedelta
 
 ## Where do we store the access cards
 cardfile = '/home/pi/known_cards.csv'
