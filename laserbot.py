@@ -67,7 +67,7 @@ code = ''
 
 def flash(colour,count):
     # mapping of colours to GPIO - Verify with above
-    gpiopin('red':16, 'orange':21, 'green':20)
+    gpiopin = {'red':16, 'orange':21, 'green':20}
     if colour in gpiopin:
         for i in range(1, count): # people probably don't expect count+1 loops
             GPIO.output(gpiopin[colour], True)
