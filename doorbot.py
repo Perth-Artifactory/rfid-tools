@@ -53,6 +53,7 @@ with open(cardfile) as csvfile:
         cardhex, person, disabled = row
         knowncards[cardhex] = [person,bool(disabled)]
 print knowncards
+irk('Started - %d cards loaded' % len(knowncards))
 
 code = ''
 
