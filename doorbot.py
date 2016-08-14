@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from time import gmtime, strftime
-import urllib2
 import time
 import RPi.GPIO as GPIO
 import csv
@@ -95,8 +94,8 @@ while True:
                                         print "ALLOWED: " + knowncards[card][0]
                                         syslog.syslog('ALLOWED: %s %s' % (knowncards[card][0],int(cardno,16)))
                                         irk('\x1b[32m' + knowncards[card][0]+ 'opened the door')
-                                        cmd="curl -g http://10.60.210.69/entryapi.php?entryname='%s'?time='%s'" % (knowncards[card][0],curtime)
-                                        os.system(cmd)
+                                        #cmd="curl -g http://10.60.210.69/entryapi.php?entryname='%s'?time='%s'" % (knowncards[card][0],curtime)
+                                        #os.system(cmd)
                                 os.system ("mpg123 -q /opt/sounds/granted.mp3 &")
                                 unlock_door()
                 else:
