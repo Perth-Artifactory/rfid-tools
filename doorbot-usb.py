@@ -61,6 +61,7 @@ def unlock_door():
     serial.write('a')
 
 while True:
+  try:
     while serial.inWaiting() > 0:
       data = serial.readline()
       print data
@@ -104,5 +105,6 @@ while True:
             irk('\x1b[31mUnknown Card\x1b[0m presented at door')
     else:
         code = code + data
-
-# unlikely to get here...
+  except (SystemExit, KeyboardInterrupt):
+    irk('Shutting Down')
+    break
