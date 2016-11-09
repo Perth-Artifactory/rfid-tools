@@ -51,6 +51,7 @@ with open(cardfile) as csvfile:
         knowncards[cardhex] = [person,bool(disabled)]
 print knowncards
 irk('Started - %d cards loaded' % len(knowncards))
+syslog.syslog('Doorbot started')
 
 code = ''
 data = ''
@@ -107,4 +108,5 @@ while True:
         code = code + data
   except (SystemExit, KeyboardInterrupt):
     irk('Shutting Down')
+    syslog.syslog('Doorbot shutting down')
     break
