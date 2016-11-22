@@ -104,8 +104,8 @@ while True:
             syslog.syslog('DENIED ' + str(cardstr))
             os.system ("mpg123 -q /home/pi/denied.mp3 &")
             irk('\x1b[31mUnknown Card\x1b[0m presented at door')
-    else:
-        code = code + data
+    #else:
+    #    code = code + data
   except (SystemExit, KeyboardInterrupt):
     irk('Shutting Down')
     syslog.syslog('Doorbot shutting down')
