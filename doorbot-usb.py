@@ -40,6 +40,10 @@ import serial
 serial = serial.Serial("/dev/ttyACM0", baudrate=9600)
 #serial = serial.Serial("/dev/tty.wchusbserial1410", baudrate=9600, timeout=0)
 
+time.sleep(10)
+serial.write('B')
+time.sleep(1)
+
 types = {'6F': 'Card','28':'Fob','1D':'Card', '1C':'Card'}
 knowncards = {}
 
@@ -58,7 +62,7 @@ data = ''
 
 def unlock_door():
     serial.write('A')
-    time.sleep(3)
+    time.sleep(5)
     serial.write('a')
 
 while True:
@@ -85,6 +89,9 @@ while True:
                 print "DISABLED: " + knowncards[card][0]
                 os.system ("mpg123 -q /home/pi/denied.mp3 &")
                 syslog.syslog('DENIED: %s (Card Disabled) %s' % (knowncards[card][0],int(cardno,16)))
+	        os.system('echo Sorry This card is disabled %s | festival --tts' % knowncards[card][0])
+
+
                 irk('\x1b[31m'+knowncards[card][0] +'\x1b[0m denied access')
             else:
                 if (knowncards[card][0] == ''):
@@ -98,6 +105,9 @@ while True:
                     #cmd="curl -g http://10.60.210.69/entryapi.php?entryname='%s'?time='%s'" % (knowncards[card][0],curtime)
                     #os.system(cmd)
                 os.system ("mpg123 -q /home/pi/granted.mp3 &")
+		time.sleep(1)
+	        #os.system('echo %s | festival --tts' % knowncards[card][0])
+
                 unlock_door()
         else:
             print "UNKNOWN Card/Fob"
