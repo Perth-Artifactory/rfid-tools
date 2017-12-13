@@ -40,9 +40,9 @@ import serial
 serial = serial.Serial("/dev/ttyACM0", baudrate=9600)
 #serial = serial.Serial("/dev/tty.wchusbserial1410", baudrate=9600, timeout=0)
 
-time.sleep(10)
+# Turn on the door relay
+time.sleep(5)
 serial.write('B')
-time.sleep(1)
 
 types = {'6F': 'Card','28':'Fob','1D':'Card', '1C':'Card'}
 knowncards = {}
